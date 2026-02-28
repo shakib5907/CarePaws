@@ -43,7 +43,7 @@ class FeaturesSection extends StatelessWidget {
               Expanded(
                 child: _FeatureCard(
                   icon: Icons.medical_services_rounded,
-                  title: 'First Aid',
+                  title: 'Emergency Help',
                   subtitle: 'Emergency Guide',
                   color: appGreen,
                   lightColor: const Color(0xFFe8f8f1),
@@ -56,7 +56,7 @@ class FeaturesSection extends StatelessWidget {
               Expanded(
                 child: _FeatureCard(
                   icon: Icons.notifications_active_rounded,
-                  title: 'Reminders',
+                  title: 'Vaccine Reminder' ,
                   subtitle: 'Meds & Vaccines',
                   color: const Color(0xFF1E88E5),
                   lightColor: const Color(0xFFe8f0ff),
