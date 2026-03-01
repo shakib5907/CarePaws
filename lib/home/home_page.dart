@@ -1,3 +1,5 @@
+import 'package:carepaws/mypets.dart';
+import 'package:carepaws/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -18,16 +20,25 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _currentNavIndex = 0;
 
-  static const List<Widget> _navPages = <Widget>[
-    RemindersPage(),
-  ];
-
   void _onNavTapped(int index) {
+    setState(() => _currentNavIndex = index);
+
     if (index == 1) {
-      Navigator.push(context, MaterialPageRoute(builder: (_) => _navPages[0]));
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const MyPetsPage()),
+      ).then((_) {
+        // Optional: when returning from My Pets, highlight Home again
+        setState(() => _currentNavIndex = 0);
+      });
       return;
     }
-    setState(() => _currentNavIndex = index);
+
+    if (index == 2) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Profile page coming soon')),
+      );
+    }
   }
 
   @override
