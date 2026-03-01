@@ -48,7 +48,7 @@ class ProfilePage extends StatelessWidget {
                   ListTile(
                     leading: Icon(Icons.location_on_outlined),
                     title: Text('Address'),
-                    subtitle: Text('Kochi, Kerala'),
+                    subtitle: Text('97/3,Manik Nagar, Dhaka-1203'),
                   ),
                 ],
               ),
