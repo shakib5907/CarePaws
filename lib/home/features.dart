@@ -1,4 +1,5 @@
 import 'package:carepaws/emergencyhelp.dart';
+import 'package:carepaws/findvetpage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,13 +26,6 @@ class FeaturesSection extends StatelessWidget {
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   color: Colors.black87,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'See all »',
-                  style: GoogleFonts.poppins(color: appGreen, fontSize: 13),
                 ),
               ),
             ],
@@ -74,7 +68,7 @@ class FeaturesSection extends StatelessWidget {
                   subtitle: 'Nearby Clinics',
                   color: const Color(0xFFFF7043),
                   lightColor: const Color(0xFFfff0ec),
-                  onTap: () {},
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FindVetPage())),
                 ),
               ),
 

@@ -1,7 +1,10 @@
+import 'package:carepaws/login_screen.dart';
+import 'package:carepaws/settingspage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../findvetpage.dart';
 import '../mypets.dart';
 import '../profilepage.dart';
 
@@ -53,10 +56,21 @@ class CarePawsDrawer extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const MyPetsPage()),
             );
           }),
-          _drawerItem(Icons.settings_outlined, 'Settings', () {}),
-          _drawerItem(Icons.info_outline, 'About CarePaws', () {}),
+          _drawerItem(Icons.settings_outlined, 'Settings', () {
+            final navigator = Navigator.of(context);
+            navigator.pop(); // close drawer
+            navigator.push(
+              MaterialPageRoute(builder: (_) => const SettingsPage()),
+            );
+          }),
           const Divider(indent: 16, endIndent: 16),
-          _drawerItem(Icons.logout, 'Logout', () {}, color: Colors.redAccent),
+          _drawerItem(Icons.logout, 'Logout', () {
+            final navigator = Navigator.of(context);
+            navigator.pop(); // close drawer
+            navigator.push(
+              MaterialPageRoute(builder: (_) => const LoginScreen()),
+            );
+          }, color: Colors.redAccent),
         ],
       ),
     );
@@ -149,7 +163,7 @@ class ExtendedPart extends StatelessWidget {
 
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FindVetPage())),
             icon: const Icon(Icons.location_on_rounded, size: 18),
             label: Text(
               'Find a Vet',
