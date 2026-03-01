@@ -1,3 +1,4 @@
+import 'package:carepaws/emergencyhelp.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -47,7 +48,7 @@ class FeaturesSection extends StatelessWidget {
                   subtitle: 'Emergency Guide',
                   color: appGreen,
                   lightColor: const Color(0xFFe8f8f1),
-                  onTap: () {},
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EmergencyHelpPage())),
                 ),
               ),
 
