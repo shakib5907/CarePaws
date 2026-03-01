@@ -3,6 +3,7 @@ import 'package:carepaws/splash_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../profilepage.dart';
 import 'appbar.dart';
 import 'features.dart';
 import 'activity_reminder.dart';
@@ -35,9 +36,10 @@ class _HomePageState extends State<HomePage> {
     }
 
     if (index == 2) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile page coming soon')),
-      );
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const ProfilePage()),
+      ).then((_) => setState(() => _currentNavIndex = 0));
     }
   }
 

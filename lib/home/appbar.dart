@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../mypets.dart';
+import '../profilepage.dart';
+
 const appGreen = Color(0xFF0da86c);
 
 AppBar buildAppBar() {
@@ -36,8 +39,20 @@ class CarePawsDrawer extends StatelessWidget {
         children: [
           _drawerHeader(),
           const SizedBox(height: 8),
-          _drawerItem(Icons.person_outline, 'My Profile', () {}),
-          _drawerItem(Icons.pets_outlined, 'My Pets', () {}),
+          _drawerItem(Icons.person_outline, 'My Profile', () {
+            final navigator = Navigator.of(context);
+            navigator.pop(); // close drawer
+            navigator.push(
+              MaterialPageRoute(builder: (_) => const ProfilePage()),
+            );
+          }),
+          _drawerItem(Icons.pets_outlined, 'My Pets', () {
+            final navigator = Navigator.of(context);
+            navigator.pop(); // close drawer
+            navigator.push(
+              MaterialPageRoute(builder: (_) => const MyPetsPage()),
+            );
+          }),
           _drawerItem(Icons.settings_outlined, 'Settings', () {}),
           _drawerItem(Icons.info_outline, 'About CarePaws', () {}),
           const Divider(indent: 16, endIndent: 16),
