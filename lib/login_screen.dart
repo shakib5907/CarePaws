@@ -201,7 +201,7 @@ class PageTitleBar extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 260.0),
+      padding: const EdgeInsets.only(top: 240.0),
       child: Container(
         width: double.infinity,
         height: MediaQuery.of(context).size.height / 4,
@@ -213,7 +213,7 @@ class PageTitleBar extends StatelessWidget{
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 30.0),
+          padding: const EdgeInsets.only(top: 40.0),
           child: Text(
             title,
             textAlign: TextAlign.center,
