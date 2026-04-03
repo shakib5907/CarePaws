@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "46519691395",
+    "project_id": "carepaws-fc283",
+    "storage_bucket": "carepaws-fc283.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:46519691395:android:ad85607248113470f713b6",
+        "android_client_info": {
+          "package_name": "com.example.carepaws"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRNvGjMcEnemIsaXOwxUB58urefOpz99Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

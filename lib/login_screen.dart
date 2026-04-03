@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const SizedBox(height: 15),
-                        const SizedBox(height: 20,),
+                        const SizedBox(height: 20),
                         Form(
                           child: Column(
                             children: [
@@ -97,7 +97,7 @@ class UnderPart extends StatelessWidget{
           title,
           style: const TextStyle(
             fontSize: 13,
-            color: Colors.grey,
+            color: Color(0xFF0da86c),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -206,22 +206,22 @@ class PageTitleBar extends StatelessWidget{
         width: double.infinity,
         height: MediaQuery.of(context).size.height / 4,
         decoration: const BoxDecoration(
-          color: Color(0xfffeeeee4),
+          color: Colors.white,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(50),
             topRight: Radius.circular(50),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 16.0),
+          padding: const EdgeInsets.only(top: 30.0),
           child: Text(
             title,
             textAlign: TextAlign.center,
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 25,
               letterSpacing: 1,
               fontWeight: FontWeight.bold,
-              color: Color(0xfff575861),
+              color: Color(0xFF0da86c),
             ),
           ),
         ),
@@ -273,9 +273,12 @@ class rounderInputField extends StatelessWidget{
         decoration: InputDecoration(
           icon: Icon(
             icon,
-            color: Color(0xfff1bb274),
+            color: Colors.white,
           ),
           hintText: hintText,
+          hintStyle: TextStyle(
+            color: Colors.white,
+          ),
           border: InputBorder.none,
         ),
       ),
@@ -295,7 +298,7 @@ class TextFieldContainer extends StatelessWidget{
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       width: size.width *0.8,
       decoration: BoxDecoration(
-        color: Color(0xfffeeeee4),
+        color: Color(0xFF0da86c),
         borderRadius: BorderRadius.circular(29),
       ),
       child: child,
@@ -313,16 +316,19 @@ class rounderPasswordField extends StatelessWidget{
     return TextFieldContainer(
       child: TextField(
         obscureText: true,
-        cursorColor: Color(0xFF0da86c),
+        cursorColor: Colors.white,
         decoration: const InputDecoration(
           icon: Icon(
             Icons.lock,
-            color: Color(0xfff1bb274),
+            color: Colors.white,
           ),
           hintText: "Password",
+          hintStyle: TextStyle(
+            color: Colors.white,
+          ),
           suffixIcon: Icon(
             Icons.visibility,
-            color: Color(0xFF0da86c),
+            color: Colors.white,
           ),
           border: InputBorder.none,
         ),
