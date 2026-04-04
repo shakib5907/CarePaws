@@ -20,6 +20,7 @@ class ReminderItem {
     required this.lightColor,
   });
 }
+
 const List<ReminderItem> demoReminders = [
   ReminderItem(
     title: 'NexGard Chewables',
@@ -36,8 +37,8 @@ const List<ReminderItem> demoReminders = [
     timeRange: '10:00 - 10:30',
     timeLabel: '10 AM',
     icon: Icons.vaccines_rounded,
-    color: Color(0xFF1E88E5),
-    lightColor: Color(0xFFe8f0ff),
+    color: Color(0xFF0da86c),
+    lightColor: Color(0xFFe8f8f1),
   ),
   ReminderItem(
     title: 'Vitamin Supplement',
@@ -45,7 +46,7 @@ const List<ReminderItem> demoReminders = [
     timeRange: '13:00 - 13:15',
     timeLabel: '1 PM',
     icon: Icons.local_pharmacy_rounded,
-    color: Color(0xFFFF7043),
-    lightColor: Color(0xFFfff0ec),
+    color: Color(0xFF0da86c),
+    lightColor: Color(0xFFe8f8f1),
   ),
 ];

@@ -1,9 +1,6 @@
 import 'package:carepaws/login_screen.dart';
 import 'package:carepaws/settingspage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../findvetpage.dart';
 import '../mypets.dart';
 import '../profilepage.dart';
@@ -16,9 +13,9 @@ AppBar buildAppBar() {
     elevation: 0,
     iconTheme: const IconThemeData(color: Colors.white),
     centerTitle: true,
-    title: Text(
+    title: const Text(
       'CarePaws',
-      style: GoogleFonts.poppins(
+      style: TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
         fontSize: 20,
@@ -32,6 +29,7 @@ AppBar buildAppBar() {
     ],
   );
 }
+
 class CarePawsDrawer extends StatelessWidget {
   const CarePawsDrawer({super.key});
 
@@ -44,32 +42,24 @@ class CarePawsDrawer extends StatelessWidget {
           const SizedBox(height: 8),
           _drawerItem(Icons.person_outline, 'My Profile', () {
             final navigator = Navigator.of(context);
-            navigator.pop(); // close drawer
-            navigator.push(
-              MaterialPageRoute(builder: (_) => const ProfilePage()),
-            );
+            navigator.pop();
+            navigator.push(MaterialPageRoute(builder: (_) => const ProfilePage()));
           }),
           _drawerItem(Icons.pets_outlined, 'My Pets', () {
             final navigator = Navigator.of(context);
-            navigator.pop(); // close drawer
-            navigator.push(
-              MaterialPageRoute(builder: (_) => const MyPetsPage()),
-            );
+            navigator.pop();
+            navigator.push(MaterialPageRoute(builder: (_) => const MyPetsPage()));
           }),
           _drawerItem(Icons.settings_outlined, 'Settings', () {
             final navigator = Navigator.of(context);
-            navigator.pop(); // close drawer
-            navigator.push(
-              MaterialPageRoute(builder: (_) => const SettingsPage()),
-            );
+            navigator.pop();
+            navigator.push(MaterialPageRoute(builder: (_) => const SettingsPage()));
           }),
           const Divider(indent: 16, endIndent: 16),
           _drawerItem(Icons.logout, 'Logout', () {
             final navigator = Navigator.of(context);
-            navigator.pop(); // close drawer
-            navigator.push(
-              MaterialPageRoute(builder: (_) => const LoginScreen()),
-            );
+            navigator.pop();
+            navigator.push(MaterialPageRoute(builder: (_) => const LoginScreen()));
           }, color: Colors.redAccent),
         ],
       ),
@@ -83,16 +73,16 @@ class CarePawsDrawer extends StatelessWidget {
       color: appGreen,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const CircleAvatar(
+        children: const [
+          CircleAvatar(
             radius: 34,
             backgroundColor: Colors.white,
             child: Icon(Icons.person, size: 36, color: appGreen),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12),
           Text(
             'Joey Tribbiani',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -100,7 +90,7 @@ class CarePawsDrawer extends StatelessWidget {
           ),
           Text(
             'joeysandwich@gmail.com',
-            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 13),
+            style: TextStyle(color: Colors.white70, fontSize: 13),
           ),
         ],
       ),
@@ -113,7 +103,7 @@ class CarePawsDrawer extends StatelessWidget {
       leading: Icon(icon, color: color, size: 22),
       title: Text(
         label,
-        style: GoogleFonts.poppins(
+        style: TextStyle(
           fontSize: 14,
           color: color,
           fontWeight: FontWeight.w500,
@@ -124,6 +114,7 @@ class CarePawsDrawer extends StatelessWidget {
     );
   }
 }
+
 class ExtendedPart extends StatelessWidget {
   const ExtendedPart({super.key});
 
@@ -142,32 +133,30 @@ class ExtendedPart extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Hello, Joey 👋',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white70,
               fontSize: 14,
             ),
           ),
-
           const SizedBox(height: 4),
-          Text(
+          const Text(
             'Smart Pet Care,\nAt Your Fingertips.',
-            style: GoogleFonts.poppins(
+            style: TextStyle(
               color: Colors.white,
               fontSize: 22,
               fontWeight: FontWeight.bold,
               height: 1.3,
             ),
           ),
-
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FindVetPage())),
             icon: const Icon(Icons.location_on_rounded, size: 18),
-            label: Text(
+            label: const Text(
               'Find a Vet',
-              style: GoogleFonts.poppins(
+              style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 13,
               ),
@@ -182,7 +171,6 @@ class ExtendedPart extends StatelessWidget {
               elevation: 0,
             ),
           ),
-
         ],
       ),
     );
