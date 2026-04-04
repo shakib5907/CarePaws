@@ -269,6 +269,7 @@ class rounderInputField extends StatelessWidget{
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextFormField(
+        style: TextStyle(color: Colors.white),
         cursorColor: Color(0xfff1bb274),
         decoration: InputDecoration(
           icon: Icon(
@@ -316,6 +317,7 @@ class rounderPasswordField extends StatelessWidget{
     return TextFieldContainer(
       child: TextField(
         obscureText: true,
+        style: TextStyle(color: Colors.white),
         cursorColor: Colors.white,
         decoration: const InputDecoration(
           icon: Icon(
