@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'reminder_data.dart';
 import 'add_reminder_page.dart';
 
@@ -14,11 +15,61 @@ class RemindersPage extends StatefulWidget {
 class _RemindersPageState extends State<RemindersPage> {
   final DateTime _today = DateTime.now();
   late int _selectedDay;
+  List<ReminderItem> _reminders = [];
 
   @override
   void initState() {
     super.initState();
     _selectedDay = _today.day;
+    _loadReminders();
+  }
+
+  Future<void> _loadReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> saved = prefs.getStringList('reminders') ?? [];
+    setState(() {
+      _reminders = saved.map((s) => ReminderItem.fromJsonString(s)).toList();
+    });
+  }
+
+  Future<void> _saveReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(
+      'reminders',
+      _reminders.map((r) => r.toJsonString()).toList(),
+    );
+  }
+
+  Future<void> _goToAddPage() async {
+    final ReminderItem? newReminder = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AddReminderPage()),
+    );
+    if (newReminder != null) {
+      setState(() => _reminders.add(newReminder));
+      await _saveReminders();
+    }
+  }
+
+  Future<void> _deleteReminder(int originalIndex) async {
+    setState(() => _reminders.removeAt(originalIndex));
+    await _saveReminders();
+  }
+
+  Future<void> _toggleReminder(int originalIndex) async {
+    setState(() {
+      _reminders[originalIndex] = _reminders[originalIndex].toggleActive();
+    });
+    await _saveReminders();
+  }
+
+  // Returns only reminders whose date matches the selected day
+  List<MapEntry<int, ReminderItem>> _filteredReminders() {
+    return _reminders
+        .asMap()
+        .entries
+        .where((e) => e.value.date.day == _selectedDay)
+        .toList();
   }
 
   List<DateTime> _getWeekDays() {
@@ -45,6 +96,7 @@ class _RemindersPageState extends State<RemindersPage> {
   @override
   Widget build(BuildContext context) {
     final weekDays = _getWeekDays();
+    final filtered = _filteredReminders();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF5F7F6),
@@ -86,10 +138,7 @@ class _RemindersPageState extends State<RemindersPage> {
                     ),
                     Text(
                       _monthYear(_today),
-                      style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 13,
-                      ),
+                      style: const TextStyle(color: Colors.white70, fontSize: 13),
                     ),
                   ],
                 ),
@@ -169,12 +218,7 @@ class _RemindersPageState extends State<RemindersPage> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const AddReminderPage()),
-                          );
-                        },
+                        onPressed: _goToAddPage,
                         child: const Text(
                           '+ Add',
                           style: TextStyle(
@@ -190,11 +234,20 @@ class _RemindersPageState extends State<RemindersPage> {
                   const SizedBox(height: 8),
 
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: demoReminders.length,
-                      itemBuilder: (context, index) {
-                        final reminder = demoReminders[index];
-                        return _buildReminderRow(reminder);
+                    child: filtered.isEmpty
+                        ? const Center(
+                      child: Text(
+                        'No reminders for this day.\nTap + Add to create one.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.black38, fontSize: 14),
+                      ),
+                    )
+                        : ListView.builder(
+                      itemCount: filtered.length,
+                      itemBuilder: (context, i) {
+                        final originalIndex = filtered[i].key;
+                        final reminder = filtered[i].value;
+                        return _buildReminderRow(reminder, originalIndex);
                       },
                     ),
                   ),
@@ -208,7 +261,7 @@ class _RemindersPageState extends State<RemindersPage> {
     );
   }
 
-  Widget _buildReminderRow(ReminderItem reminder) {
+  Widget _buildReminderRow(ReminderItem reminder, int originalIndex) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
@@ -226,15 +279,14 @@ class _RemindersPageState extends State<RemindersPage> {
             ),
           ),
           const SizedBox(width: 10),
-          Expanded(child: _buildReminderCard(reminder)),
+          Expanded(child: _buildReminderCard(reminder, originalIndex)),
         ],
       ),
     );
   }
 
-  Widget _buildReminderCard(ReminderItem reminder) {
+  Widget _buildReminderCard(ReminderItem reminder, int originalIndex) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -268,10 +320,7 @@ class _RemindersPageState extends State<RemindersPage> {
                   const SizedBox(height: 2),
                   Text(
                     reminder.subtitle,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
+                    style: const TextStyle(fontSize: 12, color: Colors.grey),
                   ),
                   const SizedBox(height: 8),
                   Row(
@@ -280,17 +329,27 @@ class _RemindersPageState extends State<RemindersPage> {
                       const SizedBox(width: 4),
                       Text(
                         reminder.timeRange,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                        ),
+                        style: const TextStyle(fontSize: 12, color: Colors.grey),
                       ),
                     ],
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.notifications_none, color: Colors.grey, size: 22),
+            IconButton(
+              onPressed: () => _toggleReminder(originalIndex),
+              icon: Icon(
+                reminder.isActive
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_off_rounded,
+                color: reminder.isActive ? appGreen : Colors.grey,
+                size: 22,
+              ),
+            ),
+            IconButton(
+              onPressed: () => _deleteReminder(originalIndex),
+              icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
+            ),
           ],
         ),
       ),

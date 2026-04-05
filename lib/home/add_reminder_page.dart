@@ -13,7 +13,9 @@ class AddReminderPage extends StatefulWidget {
 class _AddReminderPageState extends State<AddReminderPage> {
   int _selectedType = 1;
   final _nameController = TextEditingController();
-  final _durationController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _nameFocus = FocusNode();
+  final _amountFocus = FocusNode();
   TimeOfDay? _selectedTime;
 
   final List<Map<String, dynamic>> _types = [
@@ -51,6 +53,21 @@ class _AddReminderPageState extends State<AddReminderPage> {
     return '$hour : $minute $period';
   }
 
+  String _formatTimeLabel(TimeOfDay time) {
+    final hour = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hour $period';
+  }
+
+  String _formatTimeRange(TimeOfDay time) {
+    final startHour = time.hour.toString().padLeft(2, '0');
+    final startMinute = time.minute.toString().padLeft(2, '0');
+    final endTime = TimeOfDay(hour: (time.hour + 1) % 24, minute: time.minute);
+    final endHour = endTime.hour.toString().padLeft(2, '0');
+    final endMinute = endTime.minute.toString().padLeft(2, '0');
+    return '$startHour:$startMinute - $endHour:$endMinute';
+  }
+
   void _save() {
     if (_nameController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -64,13 +81,29 @@ class _AddReminderPageState extends State<AddReminderPage> {
       );
       return;
     }
-    Navigator.pop(context);
+
+    final newReminder = ReminderItem(
+      title: _nameController.text.trim(),
+      subtitle: _amountController.text.trim().isEmpty
+          ? _types[_selectedType]['label']
+          : _amountController.text.trim(),
+      timeRange: _formatTimeRange(_selectedTime!),
+      timeLabel: _formatTimeLabel(_selectedTime!),
+      icon: _types[_selectedType]['icon'],
+      color: appGreen,
+      lightColor: const Color(0xFFe8f8f1),
+      date: DateTime.now(),
+    );
+
+    Navigator.pop(context, newReminder);
   }
 
   @override
   void dispose() {
     _nameController.dispose();
-    _durationController.dispose();
+    _amountController.dispose();
+    _nameFocus.dispose();
+    _amountFocus.dispose();
     super.dispose();
   }
 
@@ -102,7 +135,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            // Title
             Center(
               child: Column(
                 children: [
@@ -141,10 +173,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   const SizedBox(height: 4),
                   const Text(
                     'And set your schedule',
-                    style: TextStyle(
-                      color: Colors.black38,
-                      fontSize: 13,
-                    ),
+                    style: TextStyle(color: Colors.black38, fontSize: 13),
                   ),
                 ],
               ),
@@ -152,7 +181,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
             const SizedBox(height: 24),
 
-            // Form card
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -163,7 +191,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  // Reminder Type
+                  // ── Reminder Type ──────────────────────────────────────
                   const Text(
                     'REMINDER TYPE',
                     style: TextStyle(
@@ -217,7 +245,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   const Divider(color: Colors.black12),
                   const SizedBox(height: 16),
 
-                  // Reminder Name
+                  // ── Reminder Name ──────────────────────────────────────
                   const Text(
                     'REMINDER NAME',
                     style: TextStyle(
@@ -233,27 +261,26 @@ class _AddReminderPageState extends State<AddReminderPage> {
                       Expanded(
                         child: TextField(
                           controller: _nameController,
+                          focusNode: _nameFocus,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.black87,
                             fontWeight: FontWeight.w500,
                           ),
                           decoration: const InputDecoration(
-                            hintText: 'e.g. NexGard Chewables',
-                            hintStyle: TextStyle(
-                              color: Colors.black26,
-                              fontSize: 14,
-                            ),
                             border: InputBorder.none,
                           ),
                         ),
                       ),
-                      const Text(
-                        '+ Add',
-                        style: TextStyle(
-                          color: appGreen,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
+                      GestureDetector(
+                        onTap: () => FocusScope.of(context).requestFocus(_nameFocus),
+                        child: const Text(
+                          '+ Add',
+                          style: TextStyle(
+                            color: appGreen,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ],
@@ -262,9 +289,9 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   const Divider(color: Colors.black12),
                   const SizedBox(height: 16),
 
-                  // Duration
+                  // ── Amount ─────────────────────────────────────────────
                   const Text(
-                    'DURATION',
+                    'AMOUNT',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -277,28 +304,27 @@ class _AddReminderPageState extends State<AddReminderPage> {
                     children: [
                       Expanded(
                         child: TextField(
-                          controller: _durationController,
+                          controller: _amountController,
+                          focusNode: _amountFocus,
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.black87,
                             fontWeight: FontWeight.w500,
                           ),
                           decoration: const InputDecoration(
-                            hintText: 'e.g. 3 Days',
-                            hintStyle: TextStyle(
-                              color: Colors.black26,
-                              fontSize: 14,
-                            ),
                             border: InputBorder.none,
                           ),
                         ),
                       ),
-                      const Text(
-                        '+ Add',
-                        style: TextStyle(
-                          color: appGreen,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
+                      GestureDetector(
+                        onTap: () => FocusScope.of(context).requestFocus(_amountFocus),
+                        child: const Text(
+                          '+ Add',
+                          style: TextStyle(
+                            color: appGreen,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
                     ],
@@ -307,7 +333,7 @@ class _AddReminderPageState extends State<AddReminderPage> {
                   const Divider(color: Colors.black12),
                   const SizedBox(height: 16),
 
-                  // Time
+                  // ── Time ───────────────────────────────────────────────
                   const Text(
                     'TIME',
                     style: TextStyle(
@@ -351,7 +377,6 @@ class _AddReminderPageState extends State<AddReminderPage> {
 
             const SizedBox(height: 32),
 
-            // Save button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
