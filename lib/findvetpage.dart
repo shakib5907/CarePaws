@@ -29,6 +29,7 @@ class FindVetPage extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(height: 8),
         itemBuilder: (_, index) {
           return Card(
+            color: Colors.white,
             margin: EdgeInsets.zero,
             child: ListTile(
               leading: const CircleAvatar(

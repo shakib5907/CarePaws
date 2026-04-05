@@ -76,6 +76,7 @@ class _MyPetsPageState extends State<MyPetsPage> {
             const SizedBox(height: 12),
             Expanded(
               child: Card(
+                color: Colors.white,
                 child: _pets.isEmpty
                     ? const Center(child: Text('No pets yet'))
                     : ListView.separated(
