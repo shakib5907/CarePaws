@@ -38,6 +38,7 @@ dependencies:
   firebase_core: ^3.15.2
   firebase_auth: ^5.5.3
   cloud_firestore: ^5.6.12
+  shared_preferences: ^2.3.2
 
 dev_dependencies:
   flutter_test:

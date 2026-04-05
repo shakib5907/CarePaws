@@ -3,6 +3,7 @@ import 'package:carepaws/settingspage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../findvetpage.dart';
 import '../mypets.dart';
@@ -77,6 +78,10 @@ class CarePawsDrawer extends StatelessWidget {
   }
 
   Widget _drawerHeader() {
+    final user = FirebaseAuth.instance.currentUser;
+    final String name = user?.displayName ?? 'No Name';
+    final String email = user?.email ?? 'No Email';
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(20, 60, 20, 24),
@@ -91,7 +96,7 @@ class CarePawsDrawer extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            'Joey Tribbiani',
+            name,
             style: GoogleFonts.poppins(
               color: Colors.white,
               fontSize: 18,
@@ -99,7 +104,7 @@ class CarePawsDrawer extends StatelessWidget {
             ),
           ),
           Text(
-            'joeysandwich@gmail.com',
+            email,
             style: GoogleFonts.poppins(color: Colors.white70, fontSize: 13),
           ),
         ],
@@ -129,6 +134,9 @@ class ExtendedPart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+    final String firstName = (user?.displayName ?? 'there').split(' ').first;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 32, 24, 32),
@@ -143,13 +151,9 @@ class ExtendedPart extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Hello, Joey 👋',
-            style: GoogleFonts.poppins(
-              color: Colors.white70,
-              fontSize: 14,
-            ),
+            'Hello, $firstName 👋',
+            style: GoogleFonts.poppins(color: Colors.white70, fontSize: 14),
           ),
-
           const SizedBox(height: 4),
           Text(
             'Smart Pet Care,\nAt Your Fingertips.',
@@ -160,29 +164,23 @@ class ExtendedPart extends StatelessWidget {
               height: 1.3,
             ),
           ),
-
           const SizedBox(height: 20),
           ElevatedButton.icon(
-            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FindVetPage())),
+            onPressed: () => Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const FindVetPage())),
             icon: const Icon(Icons.location_on_rounded, size: 18),
             label: Text(
               'Find a Vet',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w600,
-                fontSize: 13,
-              ),
+              style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 13),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
               foregroundColor: appGreen,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               elevation: 0,
             ),
           ),
-
         ],
       ),
     );

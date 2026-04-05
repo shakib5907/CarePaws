@@ -124,6 +124,7 @@ class _EmergencyHelpPageState extends State<EmergencyHelpPage> {
             const SizedBox(height: 16),
             Expanded(
               child: Card(
+                color: Colors.white,
                 child: filtered.isEmpty
                     ? const Center(
                   child: Text(
@@ -162,7 +163,8 @@ class _EmergencyHelpPageState extends State<EmergencyHelpPage> {
         icon: const Icon(Icons.medical_services_outlined),
         label: const Text('Contact Vet'),
         backgroundColor: appGreen,
-        elevation: 8,
+        foregroundColor: Colors.white,
+        elevation: 10,
       ),
     );
   }
