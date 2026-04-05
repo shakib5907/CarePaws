@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'auth_service.dart';
 import 'home/home_page.dart';
 import 'signUp_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +13,59 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+  bool _isLoading = false;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleLogin() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      await _authService.login(
+        email: _emailController.text,
+        password: _passwordController.text,
+      );
+
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      String message = switch (e.code) {
+        'user-not-found'   => 'No account found with this email.',
+        'wrong-password'   => 'Incorrect password. Please try again.',
+        'invalid-email'    => 'Please enter a valid email address.',
+        'user-disabled'    => 'This account has been disabled.',
+        _                  => 'Login failed. Please try again.',
+      };
+      _showSnackBar(message);
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -22,8 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             child: Stack(
               children: [
-                const Upside(imgUrl : "Asset/login.png"),
-                const PageTitleBar(title : "Login to your account"),
+                const Upside(imgUrl: "Asset/login.png"),
+                const PageTitleBar(title: "Login to your account"),
                 Padding(
                   padding: const EdgeInsets.only(top: 320.0),
                   child: Container(
@@ -38,41 +93,56 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const SizedBox(height: 15),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 35),
                         Form(
+                          key: _formKey,
                           child: Column(
                             children: [
-                              const rounderInputField(
-                                hintText : "Email",
-                                icon : Icons.email,
+                              rounderInputField(
+                                hintText: "Email",
+                                icon: Icons.email,
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (val) =>
+                                val == null || !val.contains('@')
+                                    ? 'Please enter a valid email'
+                                    : null,
                               ),
-                              const rounderPasswordField(),
-                              RoundedButton(
+                              rounderPasswordField(
+                                controller: _passwordController,
+                                validator: (val) =>
+                                val == null || val.length < 6
+                                    ? 'Password must be at least 6 characters'
+                                    : null,
+                              ),
+                              _isLoading
+                                  ? const CircularProgressIndicator(
+                                  color: Color(0xFF0da86c))
+                                  : RoundedButton(
                                 text: "LOGIN",
-                                press: () {
+                                press: _handleLogin,
+                              ),
+                              const SizedBox(height: 10),
+                              UnderPart(
+                                title: "Don't have an account?",
+                                navigatorText: "Register here",
+                                onTap: () {
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => HomePage()),
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                        const SignupScreen()),
                                   );
                                 },
                               ),
-                              const SizedBox(height: 10,),
-                              UnderPart(title: "Don't have an account?", navigatorText: "Register here", onTap: () {
-                                Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => const SignupScreen())
-                                );
-                              },
-                              ),
-                              const SizedBox(height: 16),
-                              const SizedBox(height: 200,),
+                              const SizedBox(height: 30),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -81,7 +151,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-
 class UnderPart extends StatelessWidget{
   const UnderPart({ Key? key,required this.title, required this.navigatorText, required this.onTap }) : super(key : key);
   final String title;
@@ -260,27 +329,37 @@ class rounderIcon extends StatelessWidget{
   }
 }
 
-class rounderInputField extends StatelessWidget{
+class rounderInputField extends StatelessWidget {
+  const rounderInputField({
+    Key? key,
+    required this.hintText,
+    this.icon = Icons.person,
+    this.controller,
+    this.validator,
+    this.keyboardType,
+  }) : super(key: key);
 
-  const rounderInputField({ Key? key,required this.hintText, this.icon = Icons.person }) : super(key : key);
   final String? hintText;
   final IconData icon;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextFormField(
-        style: TextStyle(color: Colors.white),
-        cursorColor: Color(0xfff1bb274),
+        controller: controller,
+        validator: validator,
+        keyboardType: keyboardType,
+        style: const TextStyle(color: Colors.white),
+        cursorColor: Colors.white,
         decoration: InputDecoration(
-          icon: Icon(
-            icon,
-            color: Colors.white,
-          ),
+          icon: Icon(icon, color: Colors.white),
           hintText: hintText,
-          hintStyle: TextStyle(
-            color: Colors.white,
-          ),
+          hintStyle: const TextStyle(color: Colors.white),
           border: InputBorder.none,
+          errorStyle: const TextStyle(color: Colors.white70),
         ),
       ),
     );
@@ -307,35 +386,44 @@ class TextFieldContainer extends StatelessWidget{
   }
 }
 
-class rounderPasswordField extends StatelessWidget{
+class rounderPasswordField extends StatefulWidget {
+  const rounderPasswordField({Key? key, this.controller, this.validator})
+      : super(key: key);
 
-  const rounderPasswordField({ Key? key}) : super(key : key);
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+
+  @override
+  State<rounderPasswordField> createState() => _rounderPasswordFieldState();
+}
+
+class _rounderPasswordFieldState extends State<rounderPasswordField> {
+  bool _obscure = true;
 
   @override
   Widget build(BuildContext context) {
-
     return TextFieldContainer(
-      child: TextField(
-        obscureText: true,
-        style: TextStyle(color: Colors.white),
+      child: TextFormField(
+        controller: widget.controller,
+        validator: widget.validator,
+        obscureText: _obscure,
+        style: const TextStyle(color: Colors.white),
         cursorColor: Colors.white,
-        decoration: const InputDecoration(
-          icon: Icon(
-            Icons.lock,
-            color: Colors.white,
-          ),
+        decoration: InputDecoration(
+          icon: const Icon(Icons.lock, color: Colors.white),
           hintText: "Password",
-          hintStyle: TextStyle(
-            color: Colors.white,
-          ),
-          suffixIcon: Icon(
-            Icons.visibility,
-            color: Colors.white,
+          hintStyle: const TextStyle(color: Colors.white),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscure ? Icons.visibility : Icons.visibility_off,
+              color: Colors.white,
+            ),
+            onPressed: () => setState(() => _obscure = !_obscure),
           ),
           border: InputBorder.none,
+          errorStyle: const TextStyle(color: Colors.white70),
         ),
       ),
     );
   }
-
 }
