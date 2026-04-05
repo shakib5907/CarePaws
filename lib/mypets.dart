@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const appGreen = Color(0xFF0da86c);
+const _kPetsKey = 'my_pets';
 
 class MyPetsPage extends StatefulWidget {
   const MyPetsPage({super.key});
@@ -12,21 +15,45 @@ class MyPetsPage extends StatefulWidget {
 class _MyPetsPageState extends State<MyPetsPage> {
   final _name = TextEditingController();
   final _desc = TextEditingController();
+  List<Map<String, String>> _pets = [];
 
-  final List<Map<String, String>> _pets = [
-    {'name': 'Bruno', 'desc': 'Friendly dog'}
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadPets();
+  }
+
+  Future<void> _loadPets() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_kPetsKey);
+    if (raw != null) {
+      final decoded = List<Map<String, dynamic>>.from(jsonDecode(raw));
+      setState(() {
+        _pets = decoded.map((e) => e.cast<String, String>()).toList();
+      });
+    }
+  }
+
+  Future<void> _savePets() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_kPetsKey, jsonEncode(_pets));
+  }
 
   void _addPet() {
     final name = _name.text.trim();
     final desc = _desc.text.trim();
-
     if (name.isEmpty || desc.isEmpty) return;
 
     setState(() => _pets.add({'name': name, 'desc': desc}));
+    _savePets(); // 👈 save after adding
     _name.clear();
     _desc.clear();
     FocusScope.of(context).unfocus();
+  }
+
+  void _deletePet(int i) {
+    setState(() => _pets.removeAt(i));
+    _savePets();
   }
 
   @override
@@ -70,7 +97,7 @@ class _MyPetsPageState extends State<MyPetsPage> {
               child: OutlinedButton.icon(
                 onPressed: _addPet,
                 icon: const Icon(Icons.add),
-                label: const Text('Add Pet'),
+                label: const Text('Add Pet', style: TextStyle(color: Colors.black)),
               ),
             ),
             const SizedBox(height: 12),
@@ -88,7 +115,7 @@ class _MyPetsPageState extends State<MyPetsPage> {
                     subtitle: Text(_pets[i]['desc']!),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete_outline, color: appGreen),
-                      onPressed: () => setState(() => _pets.removeAt(i)),
+                      onPressed: () => _deletePet(i),
                     ),
                   ),
                 ),
