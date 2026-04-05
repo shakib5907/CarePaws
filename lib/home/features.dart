@@ -1,11 +1,11 @@
 import 'package:carepaws/emergencyhelp.dart';
 import 'package:carepaws/findvetpage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'reminders_page.dart';
 
 const appGreen = Color(0xFF0da86c);
+const appLightGreen = Color(0xFFe8f8f1);
 
 class FeaturesSection extends StatelessWidget {
   const FeaturesSection({super.key});
@@ -17,31 +17,24 @@ class FeaturesSection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Quick Services',
-                style: GoogleFonts.poppins(
-                  fontSize: 17,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ],
+          Text(
+            'Quick Services',
+            style: GoogleFonts.poppins(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
 
           const SizedBox(height: 12),
+
           Row(
             children: [
-
               Expanded(
                 child: _FeatureCard(
                   icon: Icons.medical_services_rounded,
                   title: 'Emergency Help',
                   subtitle: 'Emergency Guide',
-                  color: appGreen,
-                  lightColor: const Color(0xFFe8f8f1),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EmergencyHelpPage())),
                 ),
               ),
@@ -51,10 +44,8 @@ class FeaturesSection extends StatelessWidget {
               Expanded(
                 child: _FeatureCard(
                   icon: Icons.notifications_active_rounded,
-                  title: 'Vaccine Reminder' ,
+                  title: 'Vaccine Reminder',
                   subtitle: 'Meds & Vaccines',
-                  color: const Color(0xFF1E88E5),
-                  lightColor: const Color(0xFFe8f0ff),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const RemindersPage())),
                 ),
               ),
@@ -64,14 +55,11 @@ class FeaturesSection extends StatelessWidget {
               Expanded(
                 child: _FeatureCard(
                   icon: Icons.location_on_rounded,
-                  title: 'Find Vet',
+                  title: 'Nearby Vet Clinics',
                   subtitle: 'Nearby Clinics',
-                  color: const Color(0xFFFF7043),
-                  lightColor: const Color(0xFFfff0ec),
                   onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const FindVetPage())),
                 ),
               ),
-
             ],
           ),
 
@@ -80,20 +68,17 @@ class FeaturesSection extends StatelessWidget {
     );
   }
 }
+
 class _FeatureCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final Color color;
-  final Color lightColor;
   final VoidCallback onTap;
 
   const _FeatureCard({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.color,
-    required this.lightColor,
     required this.onTap,
   });
 
@@ -108,7 +93,7 @@ class _FeatureCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.15),
+              color: appGreen.withOpacity(0.15),
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -116,20 +101,20 @@ class _FeatureCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-
             Container(
               padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: lightColor,
+              decoration: const BoxDecoration(
+                color: appLightGreen,
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 26),
+              child: Icon(icon, color: appGreen, size: 26),
             ),
 
             const SizedBox(height: 10),
 
             Text(
               title,
+              textAlign: TextAlign.center,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w600,
                 fontSize: 12,
@@ -141,8 +126,8 @@ class _FeatureCard extends StatelessWidget {
 
             Text(
               subtitle,
-              style: GoogleFonts.poppins(fontSize: 10, color: Colors.black38),
               textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(fontSize: 10, color: Colors.black38),
             ),
 
             const SizedBox(height: 10),
@@ -151,11 +136,10 @@ class _FeatureCard extends StatelessWidget {
               height: 3,
               width: 30,
               decoration: BoxDecoration(
-                color: color,
+                color: appGreen,
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-
           ],
         ),
       ),

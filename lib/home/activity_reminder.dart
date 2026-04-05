@@ -1,11 +1,33 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'reminder_data.dart';
 import 'reminders_page.dart';
 
-class UpcomingSection extends StatelessWidget {
+class UpcomingSection extends StatefulWidget {
   const UpcomingSection({super.key});
+
+  @override
+  State<UpcomingSection> createState() => _UpcomingSectionState();
+}
+
+class _UpcomingSectionState extends State<UpcomingSection> {
+  List<ReminderItem> _reminders = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadReminders();
+  }
+
+  Future<void> _loadReminders() async {
+    final prefs = await SharedPreferences.getInstance();
+    final List<String> saved = prefs.getStringList('reminders') ?? [];
+    if (mounted) {
+      setState(() {
+        _reminders = saved.map((s) => ReminderItem.fromJsonString(s)).toList();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +42,26 @@ class UpcomingSection extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Activity Reminder',
-                  style: GoogleFonts.poppins(
+                  style: TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
                 ),
                 TextButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const RemindersPage()));
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RemindersPage()),
+                    );
+                    _loadReminders();
                   },
-                  child: Text(
+                  child: const Text(
                     'See all »',
-                    style: GoogleFonts.poppins(
-                      color: const Color(0xFF0da86c),
+                    style: TextStyle(
+                      color: Color(0xFF0da86c),
                       fontSize: 13,
                     ),
                   ),
@@ -45,15 +71,23 @@ class UpcomingSection extends StatelessWidget {
           ),
 
           const SizedBox(height: 12),
-          SizedBox(
+
+          _reminders.isEmpty
+              ? const Padding(
+            padding: EdgeInsets.only(right: 16),
+            child: Text(
+              'No reminders yet. Tap See all to add one.',
+              style: TextStyle(fontSize: 12, color: Colors.black38),
+            ),
+          )
+              : SizedBox(
             height: 130,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
-              itemCount: demoReminders.length,
+              itemCount: _reminders.length,
               separatorBuilder: (_, __) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
-                final reminder = demoReminders[index];
-                return _buildReminderCard(reminder);
+                return _buildReminderCard(_reminders[index]);
               },
             ),
           ),
@@ -95,7 +129,7 @@ class UpcomingSection extends StatelessWidget {
               Expanded(
                 child: Text(
                   reminder.title,
-                  style: GoogleFonts.poppins(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 12,
                     color: Colors.black87,
@@ -109,7 +143,7 @@ class UpcomingSection extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             reminder.subtitle,
-            style: GoogleFonts.poppins(fontSize: 11, color: Colors.black45),
+            style: const TextStyle(fontSize: 11, color: Colors.black45),
           ),
 
           const Spacer(),
@@ -119,10 +153,16 @@ class UpcomingSection extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 reminder.timeRange,
-                style: GoogleFonts.poppins(fontSize: 11, color: Colors.black45),
+                style: const TextStyle(fontSize: 11, color: Colors.black45),
               ),
               const Spacer(),
-              Icon(Icons.notifications_none_rounded, size: 18, color: reminder.color),
+              Icon(
+                reminder.isActive
+                    ? Icons.notifications_active_rounded
+                    : Icons.notifications_off_rounded,
+                color: reminder.isActive ? reminder.color : Colors.grey,
+                size: 18,
+              ),
             ],
           ),
 
