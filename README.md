@@ -7,7 +7,7 @@ A cross-platform pet care application built with Flutter and Firebase.
 - User authentication (sign up and login via Firebase Auth)
 - Pet and user data stored in Cloud Firestore
 - Local session persistence with Shared Preferences
-- Runs on Android, iOS, Web, Windows, macOS, and Linux
+- Runs on Android, Web, Windows, macOS, and Linux
 
 ## Tech Stack
 
